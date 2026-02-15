@@ -1,0 +1,197 @@
+import { createContext, useState, useEffect, useMemo } from "react";
+
+export const ChatsContext = createContext();
+
+const initialChats = [
+  {
+    id: "chat_1771064000805",
+    name: "Чат",
+    participants: [
+      {
+        id: 0,
+        username: "Earline.Crona",
+        isAdmin: true,
+      },
+      {
+        id: 1,
+        username: "Dulce.Bartell",
+        isAdmin: false,
+      },
+      {
+        id: 2,
+        username: "Leila62",
+        isAdmin: false,
+      },
+      {
+        id: 3,
+        username: "Johnson71",
+        isAdmin: false,
+      },
+      {
+        id: 4,
+        username: "Mandy69",
+        isAdmin: false,
+      },
+      {
+        id: 5,
+        username: "Bonnie.Romaguera",
+        isAdmin: false,
+      },
+      {
+        id: 6,
+        username: "Tony_Graham94",
+        isAdmin: false,
+      },
+      {
+        id: 7,
+        username: "Kariane68",
+        isAdmin: false,
+      },
+      {
+        id: 8,
+        username: "Christine6",
+        isAdmin: false,
+      },
+      {
+        id: 9,
+        username: "Roy11",
+        isAdmin: false,
+      },
+      {
+        id: 10,
+        username: "Raymond.Smitham",
+        isAdmin: false,
+      },
+      {
+        id: 11,
+        username: "Tevin_Kutch99",
+        isAdmin: false,
+      },
+      {
+        id: 12,
+        username: "Duane76",
+        isAdmin: false,
+      },
+      {
+        id: 13,
+        username: "Anabelle_Mohr77",
+        isAdmin: false,
+      },
+      {
+        id: 14,
+        username: "Sabrina_Langosh16",
+        isAdmin: false,
+      },
+    ],
+    messages: [
+      {
+        userId: 0,
+        message: "Привет всем!!!",
+        time: "01.01, 12:00",
+      },
+      {
+        userId: 1,
+        message: "Привет! Как дела?",
+        time: "01.01, 12:01",
+      },
+      {
+        userId: 2,
+        message: "Всем привет!",
+        time: "01.01, 12:02",
+      },
+      {
+        userId: 0,
+        message: "Отлично, спасибо!",
+        time: "01.01, 12:03",
+      },
+      {
+        userId: 3,
+        message: "Ребята, какие планы?",
+        time: "01.01, 12:05",
+      },
+      {
+        userId: 4,
+        message: "Может встретимся?",
+        time: "01.01, 12:06",
+      },
+      {
+        userId: 0,
+        message: "Я за!",
+        time: "01.01, 12:07",
+      },
+      {
+        userId: 1,
+        message: "Во сколько?",
+        time: "01.01, 12:08",
+      },
+      {
+        userId: 5,
+        message: "В 18:00 норм?",
+        time: "01.01, 12:10",
+      },
+      {
+        userId: 2,
+        message: "Мне удобно",
+        time: "01.01, 12:11",
+      },
+      {
+        userId: 6,
+        message: "Я тоже приду",
+        time: "01.01, 12:12",
+      },
+      {
+        userId: 7,
+        message: "Отлично, до встречи!",
+        time: "01.01, 12:15",
+      },
+      {
+        userId: 0,
+        message: "Пока всем!",
+        time: "01.01, 12:16",
+      },
+    ],
+    createdAt: "01.01, 12:00",
+  },
+];
+
+export const ChatsProvider = ({ children }) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [savedChat, setSavedChat] = useState(null);
+  const [selectedChat, setSelectedChat] = useState(null);
+
+  const loadChats = () => {
+    const saved = localStorage.getItem("chats");
+    return saved ? JSON.parse(saved) : initialChats;
+  };
+
+  const [chats, setChats] = useState(loadChats());
+
+  useEffect(() => {
+    localStorage.setItem("chats", JSON.stringify(chats));
+  }, [chats]);
+
+  const currentChat = useMemo(() => {
+    if (!selectedChat || !chats) return null;
+    return chats.find((chat) => chat.id === selectedChat);
+  }, [chats, selectedChat]);
+
+  return (
+    <ChatsContext.Provider
+      value={{
+        chats,
+        setChats,
+        isLoading,
+        error,
+        currentChat,
+        setSavedChat,
+        selectedChat,
+        setSelectedChat,
+      }}
+    >
+      {children}
+    </ChatsContext.Provider>
+  );
+};
+
+export default ChatsContext;
